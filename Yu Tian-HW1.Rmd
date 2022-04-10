@@ -30,6 +30,7 @@ Define supervised and unsupervised learning. What are the difference(s) between 
 #### Answer
 
 (from the lecture/page #26 of book)
+
 Supervised learning: 
 For each observation of the predictor measurement(s) $x_i$, $i = 1,...,n$ there is an associated response measurement $y_i$. Then fit a model that relates the response to the predictors to accurately predict the response for future observations (prediction) or better understanding the relationship between the response and the predictors (inference). Thus, supervised learning has a supervisor, and it need to give the model observed output and input. 
 The specific learning process is prediction (accurately predict future response given predictors), estimation (understand how predictors affect response), model selection (find the "best" model for response given predictors), inference (assess the quality of our predictions and (or) estimation).
@@ -52,6 +53,7 @@ Explain the difference between a regression model and a classification model, sp
 #### Answer
 
 (from the lecture/page #28 of book)
+
 Regression model means with a quantitative response, and quantitative variables take on numerical values.
 
 Classification model means with a qualitative response, and qualitative variables take on values in one of $K$ different classes, or categories.
@@ -64,6 +66,7 @@ Name two commonly used metrics for regression ML problems. Name two commonly use
 #### Answer
 
 (from the lecture)
+
 Regression ML problems: price, blood pressure
 Classification ML problems: survived/died, spam/not spam
 
@@ -75,6 +78,7 @@ As discussed, statistical models can be used for different purposes. These purpo
 #### Answer
 
 (from the lecture)
+
 Descriptive models:
 Descriptive models best visually emphasize a trend in data, like using a line on a scatterplot.
 
@@ -98,6 +102,7 @@ c) Describe how the bias-variance tradeoff is related to the use of mechanistic 
 #### Answer
 
 (from the lecture)
+
 a) 
 Mechanistic is parametric. For mechanistic predictive models, we assume a parametric form for $f(i.e.,\beta_0+\beta_1+\dots$. It won't match true unknown f. Also, It can be added parameter to be more flexibility. However, with too many parameter, it will be overfitting.
 
@@ -123,6 +128,8 @@ How would a voter’s likelihood of support for the candidate change if they had
 Classify each question as either predictive or inferential. Explain your reasoning for each.
 
 #### Answer
+
+(according to the lecture)
 
 "Given a voter’s profile/data, how likely is it that they will vote in favor of the candidate?" is predictive. Since this question has given the actual data of observations to predict the response (the likelihood of vote), and it needs the accurate results with minimum reducible error, so this question is a predictive question. 
 
@@ -223,7 +230,7 @@ Which variables are positively or negatively correlated with which others? Do th
 ```{r}
 # make a lower triangle correlation matrix of the mpg dataset
 mpg %>% 
-  select(is.numeric) %>%
+  select(where(is.numeric)) %>%
   cor() %>%
   corrplot(type = 'lower', diag = FALSE, method = 'number')
 ```

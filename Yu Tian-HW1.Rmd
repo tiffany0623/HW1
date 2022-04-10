@@ -14,26 +14,35 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = F,
                       warning = F)
 
-# packages  
+# packages
 library(tidyverse)
 library(tidymodels)
 library(ISLR)
+library(ggplot2)
+library(corrplot)
 ```
 
+## Machine Learning Main Ideas
 ## Question 1:
 
 Define supervised and unsupervised learning. What are the difference(s) between them?
 
 #### Answer
+
+(from the lecture/page #26 of book)
 Supervised learning: 
-The actual data Y is the supervisor, so the response is known. It need to give the model observed output and input. The specific step is prediction (accurately predict future response given predictors), estimation (understand how predictors affect response), model selection (find the "best" model for response given predictors), inference (assess the quality of our predictions and (or) estimation).
-It can show the linear regression, logistic regression, k-nearest neighbors, decision trees, random forests, support vector machine(s), neural network.
+For each observation of the predictor measurement(s) $x_i$, $i = 1,...,n$ there is an associated response measurement $y_i$. Then fit a model that relates the response to the predictors to accurately predict the response for future observations (prediction) or better understanding the relationship between the response and the predictors (inference). Thus, supervised learning has a supervisor, and it need to give the model observed output and input. 
+The specific learning process is prediction (accurately predict future response given predictors), estimation (understand how predictors affect response), model selection (find the "best" model for response given predictors), inference (assess the quality of our predictions and (or) estimation).
+
+Many statistical learning method operate in the supervised learning, like linear regression, logistic regression, k-nearest neighbors, decision trees, random forests, support vector machine(s), neural network.
 
 Unsupervised learning: 
-Learn without the supervisor, so the response is not known.
-It can show that Principal Component Analysis(PCA), k-means clusting, Hierarchical clustering, neural networks.
+For every observation $i = 1,...,n$, we observe a vector of measurements $x_i$ but no associated response $y_i$. In this setting, we are in some sense working blind since we lack a response variable that can supervise our analysis.We can use it to understand the relationships between the variables or between the observations. Thus, unsupervised learning learn without a supervisor.
+
+Some statistical learning method operate in the unsupervised learning, like Principal Component Analysis(PCA), k-means clustering, Hierarchical clustering, neural networks.
 
 The difference is that supervised learning with known response, but unsupervised learning with unknown response. 
+
 
 
 ## Question 2:
@@ -42,6 +51,11 @@ Explain the difference between a regression model and a classification model, sp
 
 #### Answer
 
+(from the lecture/page #28 of book)
+Regression model means with a quantitative response, and quantitative variables take on numerical values.
+
+Classification model means with a qualitative response, and qualitative variables take on values in one of $K$ different classes, or categories.
+
 
 
 ## Question 3:
@@ -49,20 +63,30 @@ Name two commonly used metrics for regression ML problems. Name two commonly use
 
 #### Answer
 
+(from the lecture)
+Regression ML problems: price, blood pressure
+Classification ML problems: survived/died, spam/not spam
+
 
 ## Question 4:
+
 As discussed, statistical models can be used for different purposes. These purposes can generally be classified into the following three categories. Provide a brief description of each.
 
 #### Answer
+
+(from the lecture)
 Descriptive models:
-Descriptive models will be chose to best visually emphasize a trend in data, like using a line on a scatterplot.
+Descriptive models best visually emphasize a trend in data, like using a line on a scatterplot.
 
 Inferential models:
+Inferential models predict response ($Y$) with minimum reducible error without focusing on hypothesis tests.
 
 Predictive models:
+Predictive models test theories and (possibly) causal claims. They state relationship between outcome & predictors.
 
 
 ## Question 5:
+
 Predictive models are frequently used in machine learning, and they can usually be described as either mechanistic or empirically-driven. Answer the following questions.
 
 a) Define mechanistic. Define empirically-driven. How do these model types differ? How are they similar?
@@ -73,8 +97,23 @@ c) Describe how the bias-variance tradeoff is related to the use of mechanistic 
 
 #### Answer
 
+(from the lecture)
+a) 
+Mechanistic is parametric. For mechanistic predictive models, we assume a parametric form for $f(i.e.,\beta_0+\beta_1+\dots$. It won't match true unknown f. Also, It can be added parameter to be more flexibility. However, with too many parameter, it will be overfitting.
+
+Empirically-driven is non-parametric. There is no assumptions about f.  Empirically-driven predictive models requires a larger number of observations. It can be much more flexible by default. It also will have the situation of overfitting.
+
+The difference is that mechanistic models are parametric, but the empirically-driven models are non-parametric. The simility is that they will have the possibility of being overfitting. They all can be more flexibility, but mechanistic models change it with the number of parameters, and empirically-driven models change it by default.
+
+b)
+Mechanistic models will be easier to understand. 
+Explanation:
+
+c)
+
 
 ## Question 6:
+
 A political candidate’s campaign has collected some detailed voter history data from their constituents. The campaign is interested in two questions:
 
 Given a voter’s profile/data, how likely is it that they will vote in favor of the candidate?
@@ -85,15 +124,41 @@ Classify each question as either predictive or inferential. Explain your reasoni
 
 #### Answer
 
+"Given a voter’s profile/data, how likely is it that they will vote in favor of the candidate?" is predictive. Since this question has given the actual data of observations to predict the response (the likelihood of vote), and it needs the accurate results with minimum reducible error, so this question is a predictive question. 
+
+"How would a voter’s likelihood of support for the candidate change if they had personal contact with the candidate?" is inferential. This question is a causal hypothesis test,and 
+it need to state a relationship inference according to the "voter’s likelihood of support for the candidate" and "personal contact with the candidate".
+
+
+
+
+
+## Exploratory Data Analysis
+```{r}
+mpg %>% 
+  head()
+```
+
 
 ## Exercise 1:
+
 We are interested in highway miles per gallon, or the hwy variable. Create a histogram of this variable. Describe what you see/learn.
 
 #### Answer
+
 ```{r}
+# plot a histogram of highway miles per gallan
+mpg %>%
+  ggplot(aes(x=hwy)) +
+  geom_histogram(bins=60)+
+  labs(title="Histogram of hwy",
+       x ="highway miles per gallon", y = "count (the number of cars)") +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+
 hist(mpg$hwy, main = "Histogram of hwy", xlab = "highway miles per gallon", ylab = "the number of cars")
 ```
-
+From the histogram, we can find that highway miles per gallon for all cars are between the range of 10 to 45. Most cars' hwy between 15 and 30. There is a few cars has highway miles per gallon which more than 40. Also, the distribution is slight skewed.
 
 
 ## Exercise 2:
@@ -101,49 +166,73 @@ Create a scatterplot. Put hwy on the x-axis and cty on the y-axis. Describe what
 
 #### Answer
 
+```{r}
+# create a scatterplot with hwy on the x-axis and cty on the y-axis
+mpg %>%
+  ggplot(aes(x=hwy, y=cty)) + 
+  geom_point(alpha = 0.2) + 
+  labs(title = 'scatterplot of hwy vs cty',
+       x='highway miles per gallon', y='city miles per gallon') +
+  geom_smooth(method = 'lm', formula = 'y ~ x') +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+hwy and cty has a positive relationship and the spread of scatter around the blue line is alomost even. As highway miles per gallon increasing, city miles per gallon will also increase. (There is a few outliers.)
 
 
 ## Exercise 3:
 Make a bar plot of manufacturer. Flip it so that the manufacturers are on the y-axis. Order the bars by height. Which manufacturer produced the most cars? Which produced the least?
 
 #### Answer
-
+```{r}
+# make a bar plot of manufacturers
+mpg %>%
+  ggplot(aes(manufacturer)) +
+  geom_bar(stat="count") +
+  coord_flip() +
+  theme_bw()
+  
+```
+Dodge produced the most cars.
+Lincoln produced the least cars.
 
 ## Exercise 4:
 Make a box plot of hwy, grouped by cyl. Do you see a pattern? If so, what?
 
 #### Answer
+```{r}
+# make a box plot of hwy
+mpg %>%
+  ggplot(aes(x = hwy, y = cyl, group = cyl)) + 
+  geom_boxplot() +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(title = "box plot of hwy", x = "highway miles per gallon", y = "number of cylinders")
 
+  
+```
+Yes, it has a patter. With the higher number of cylinders, the values of highway miles per gallon is lower. They have a negative relationship.
 
 ## Exercise 5:
-Use the corrplot package to make a lower triangle correlation matrix of the mpg dataset. (Hint: You can find information on the package here.)
+Use the corrplot package to make a lower triangle correlation matrix of the mpg dataset. 
 
 Which variables are positively or negatively correlated with which others? Do these relationships make sense to you? Are there any that surprise you?
 
-#### Answer
+#### Answer 
 
-
-
-
-
-
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+# make a lower triangle correlation matrix of the mpg dataset
+mpg %>% 
+  select(is.numeric) %>%
+  cor() %>%
+  corrplot(type = 'lower', diag = FALSE, method = 'number')
 ```
+year is positively correlated with displ
+cyl is positively correlated with displ and year
+cty is negatively correlated with displ, year, and cyl
+hwy is negatively correlated with displ, year, and cyl
+hwy is positively correlated with cty
+Yes, these relationships make sense to me, so there is no relationship that surprise me.
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

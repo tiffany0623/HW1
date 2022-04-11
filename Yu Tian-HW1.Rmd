@@ -1,7 +1,7 @@
 ---
 title: "Pstat 131 Homework 1"
 author: "Yu Tian"
-date: "Spring 2022"
+date: "Spring 2022-04-10"
 output: pdf_document
 ---
 
@@ -32,12 +32,14 @@ Define supervised and unsupervised learning. What are the difference(s) between 
 (from the lecture/page #26 of book)
 
 Supervised learning: 
+
 For each observation of the predictor measurement(s) $x_i$, $i = 1,...,n$ there is an associated response measurement $y_i$. Then fit a model that relates the response to the predictors to accurately predict the response for future observations (prediction) or better understanding the relationship between the response and the predictors (inference). Thus, supervised learning has a supervisor, and it need to give the model observed output and input. 
 The specific learning process is prediction (accurately predict future response given predictors), estimation (understand how predictors affect response), model selection (find the "best" model for response given predictors), inference (assess the quality of our predictions and (or) estimation).
 
 Many statistical learning method operate in the supervised learning, like linear regression, logistic regression, k-nearest neighbors, decision trees, random forests, support vector machine(s), neural network.
 
 Unsupervised learning: 
+
 For every observation $i = 1,...,n$, we observe a vector of measurements $x_i$ but no associated response $y_i$. In this setting, we are in some sense working blind since we lack a response variable that can supervise our analysis.We can use it to understand the relationships between the variables or between the observations. Thus, unsupervised learning learn without a supervisor.
 
 Some statistical learning method operate in the unsupervised learning, like Principal Component Analysis(PCA), k-means clustering, Hierarchical clustering, neural networks.
@@ -54,9 +56,9 @@ Explain the difference between a regression model and a classification model, sp
 
 (from the lecture/page #28 of book)
 
-Regression model means with a quantitative response, and quantitative variables take on numerical values.
+Regression model predicts a continuous outcome with a quantitative response $Y$, and quantitative variables take on numerical values.
 
-Classification model means with a qualitative response, and qualitative variables take on values in one of $K$ different classes, or categories.
+Classification model predicts discrete class labels with a qualitative response $Y$, and qualitative variables take on values in one of $K$ different classes, or categories.
 
 
 
@@ -67,8 +69,9 @@ Name two commonly used metrics for regression ML problems. Name two commonly use
 
 (from the lecture)
 
-Regression ML problems: price, blood pressure
-Classification ML problems: survived/died, spam/not spam
+Regression ML problems: Mean Squared Error (MSE) and Mean Absolute Error(MAE)
+
+Classification ML problems: Accuracy and log-loss
 
 
 ## Question 4:
@@ -82,11 +85,11 @@ As discussed, statistical models can be used for different purposes. These purpo
 Descriptive models:
 Descriptive models best visually emphasize a trend in data, like using a line on a scatterplot.
 
-Inferential models:
-Inferential models predict response ($Y$) with minimum reducible error without focusing on hypothesis tests.
-
 Predictive models:
-Predictive models test theories and (possibly) causal claims. They state relationship between outcome & predictors.
+Predictive models predict response ($Y$) with minimum reducible error without focusing on hypothesis tests.
+
+Inferential models:
+Inferential models is significant to test theories (possibly) causal claims. They state relationship between outcome & predictors.
 
 
 ## Question 5:
@@ -112,10 +115,11 @@ The difference is that mechanistic models are parametric, but the empirically-dr
 
 b)
 Mechanistic models will be easier to understand. 
-Explanation:
+
+Explanation: We can predict results about one event in the society through collecting information and applying them to a theory. Only using the parametric form and adding parameters will be easier to understand.
 
 c)
-
+The mechanistic models usually are more flexible, which means smaller bias and larger variance. The empirically-driven models relatively will have larger bias and smaller variance. Thus, the bias-variance tradeoff is related to the choice of mechanistic or empirically-driven models.
 
 ## Question 6:
 
@@ -131,7 +135,7 @@ Classify each question as either predictive or inferential. Explain your reasoni
 
 (according to the lecture)
 
-"Given a voter’s profile/data, how likely is it that they will vote in favor of the candidate?" is predictive. Since this question has given the actual data of observations to predict the response (the likelihood of vote), and it needs the accurate results with minimum reducible error, so this question is a predictive question. 
+"Given a voter’s profile/data, how likely is it that they will vote in favor of the candidate?" is predictive. Since this question has given the actual data of observations to predict the response (the likelihood of voting in favor of the candidate), and it needs the accurate results with minimum reducible error, so this question is a predictive question. 
 
 "How would a voter’s likelihood of support for the candidate change if they had personal contact with the candidate?" is inferential. This question is a causal hypothesis test,and 
 it need to state a relationship inference according to the "voter’s likelihood of support for the candidate" and "personal contact with the candidate".
@@ -157,15 +161,13 @@ We are interested in highway miles per gallon, or the hwy variable. Create a his
 # plot a histogram of highway miles per gallan
 mpg %>%
   ggplot(aes(x=hwy)) +
-  geom_histogram(bins=60)+
+  geom_histogram(bins=30)+
   labs(title="Histogram of hwy",
        x ="highway miles per gallon", y = "count (the number of cars)") +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
-
-hist(mpg$hwy, main = "Histogram of hwy", xlab = "highway miles per gallon", ylab = "the number of cars")
 ```
-From the histogram, we can find that highway miles per gallon for all cars are between the range of 10 to 45. Most cars' hwy between 15 and 30. There is a few cars has highway miles per gallon which more than 40. Also, the distribution is slight skewed.
+From the histogram, we can find that highway miles per gallon for all cars are between the range of 10 to 45. Most cars' hwy between 15 and 30. There are two peaks around 16 hwy and 26 hwy. There is a few cars has highway miles per gallon which more than 40. Also, the distribution is slight skewed.
 
 
 ## Exercise 2:
@@ -184,8 +186,7 @@ mpg %>%
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-hwy and cty has a positive relationship and the spread of scatter around the blue line is alomost even. As highway miles per gallon increasing, city miles per gallon will also increase. (There is a few outliers.)
-
+hwy and cty has a positive relationship and the spread of scatter around the blue line is almost even. As highway miles per gallon increasing, city miles per gallon will also increase. 
 
 ## Exercise 3:
 Make a bar plot of manufacturer. Flip it so that the manufacturers are on the y-axis. Order the bars by height. Which manufacturer produced the most cars? Which produced the least?
@@ -194,8 +195,9 @@ Make a bar plot of manufacturer. Flip it so that the manufacturers are on the y-
 ```{r}
 # make a bar plot of manufacturers
 mpg %>%
-  ggplot(aes(manufacturer)) +
-  geom_bar(stat="count") +
+  ggplot(aes(x=reorder(manufacturer,rep(-1,length(manufacturer)),sum))) +
+  geom_bar() +
+  labs(x="Manufacturer") +
   coord_flip() +
   theme_bw()
   
@@ -218,7 +220,7 @@ mpg %>%
 
   
 ```
-Yes, it has a patter. With the higher number of cylinders, the values of highway miles per gallon is lower. They have a negative relationship.
+Yes, it has a patter. There is a negative relationship between hwy and cyl. With the higher number of cylinders, the values of highway miles per gallon is lower. They have a negative relationship.
 
 ## Exercise 5:
 Use the corrplot package to make a lower triangle correlation matrix of the mpg dataset. 
@@ -232,13 +234,18 @@ Which variables are positively or negatively correlated with which others? Do th
 mpg %>% 
   select(where(is.numeric)) %>%
   cor() %>%
-  corrplot(type = 'lower', diag = FALSE, method = 'number')
+  corrplot(type = 'lower', method = 'circle')
 ```
 year is positively correlated with displ
+
 cyl is positively correlated with displ and year
+
 cty is negatively correlated with displ, year, and cyl
-hwy is negatively correlated with displ, year, and cyl
+
+hwy is negatively correlated with displ, and cyl
+
 hwy is positively correlated with cty
+
 Yes, these relationships make sense to me, so there is no relationship that surprise me.
 
 
